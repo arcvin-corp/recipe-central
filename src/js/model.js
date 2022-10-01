@@ -56,5 +56,10 @@ export const getSearchResultsPage = function (page = state.search.page) {
   return state.search.results.slice(start, end);
 };
 
-// start at position 10 which is 11th element
-// end at position 20 which is
+export const updateServings = function (newServings) {
+  state.recipe.ingredients.forEach(ing => {
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+  });
+  // Update the servings in the main state
+  state.recipe.servings = newServings;
+};
