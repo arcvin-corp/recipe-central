@@ -14,9 +14,6 @@ export default class View {
   }
 
   update(data) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderError();
-
     this._data = data;
     const newMarkup = this._generateMarkup();
     const newDOM = document.createRange().createContextualFragment(newMarkup);
@@ -24,8 +21,25 @@ export default class View {
     const currentElements = Array.from(
       this._parentElement.querySelectorAll('*')
     );
-    console.log(newElements);
-    console.log(currentElements);
+
+    newElements.forEach((newEl, i) => {
+      const curEl = currentElements[i];
+
+      // Update new elements
+      if (
+        !newEl.isEqualNode(curEl) &&
+        newEl.firstChild?.nodeValue.trim() !== ''
+      ) {
+        curEl.textContent = newEl.textContent;
+      }
+
+      // Update new attributes
+      if (!newEl.isEqualNode(curEl)) {
+        Array.from(newEl.attributes).forEach(nAttr => {
+          curEl.setAttribute(nAttr.name, nAttr.value);
+        });
+      }
+    });
   }
 
   _clear() {
