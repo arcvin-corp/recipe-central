@@ -1,9 +1,9 @@
 import View from './view.js';
 import icons from 'url:../../img/icons.svg';
 
-class ResultsView extends View {
-  _parentElement = document.querySelector('.results');
-  _errorMessage = 'No recipes found for your query. Please try again!';
+class BookmarksView extends View {
+  _parentElement = document.querySelector('.bookmarks__list');
+  _errorMessage = 'No bookmarks yet. Find a nice recipe and bookmark it :)';
   _message = '';
 
   _generateMarkup() {
@@ -18,7 +18,7 @@ class ResultsView extends View {
           id === res.id ? 'preview__link--active' : ''
         }" href="#${res.id}">
             <figure class="preview__fig">
-              <img src="${res.image}" alt="${res.title}" />
+                <img src="${res.image}" alt="${res.title}" />
             </figure>
             <div class="preview__data">
                 <h4 class="preview__title">${res.title}</h4>
@@ -32,4 +32,4 @@ class ResultsView extends View {
   }
 }
 
-export default new ResultsView();
+export default new BookmarksView();
