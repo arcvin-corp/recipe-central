@@ -10,8 +10,7 @@ class AddRecipeView extends View {
 
   constructor() {
     super();
-    this._addHandlerShowWindow();
-    this._addHandlerCloseWindow();
+    this._addHandlerToggleWindow();
   }
 
   _toggleModal() {
@@ -19,12 +18,21 @@ class AddRecipeView extends View {
     this._window.classList.toggle('hidden');
   }
 
-  _addHandlerShowWindow() {
-    this._btnOpen.addEventListener('click', this._toggleModal.bind(this));
+  _addHandlerToggleWindow() {
+    [this._btnOpen, this._btnClose, this._overlay].forEach(el => {
+      el.addEventListener('click', () => {
+        this._toggleModal();
+      });
+    });
   }
 
-  _addHandlerCloseWindow() {
-    this._btnClose.addEventListener('click', this._toggleModal.bind(this));
+  addHandlerUpload(handler) {
+    this._parentElement.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const dataArr = [...new FormData(this)];
+      const data = Object.fromEntries(dataArr);
+      handler(data);
+    });
   }
 
   _generateMarkup() {}
