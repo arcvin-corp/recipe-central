@@ -13,21 +13,26 @@ export const state = {
   bookmarks: [],
 };
 
+const createRecipeObject = function (data) {
+  console.log(data);
+  return {
+    id: data.id,
+    title: data.title,
+    publisher: data.publisher,
+    sourceUrl: data.source_url,
+    image: data.image_url,
+    servings: data.servings,
+    cookingTime: data.cooking_time,
+    ingredients: data.ingredients,
+    ...(data.key && { key: data.key }),
+  };
+};
+
 export const loadRecipe = async function (id) {
   try {
     const data = await getJSON(`${API_URL}/${id}`);
 
-    const { recipe } = data.data;
-    state.recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients,
-    };
+    state.recipe = createRecipeObject(data.data.recipe);
 
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
@@ -112,13 +117,11 @@ export const uploadRecipe = async function (newRecipe) {
           throw new Error(
             'Wrong ingredient format. Please check the submitted ingredient data.'
           );
-        const [quantity, unit, ingredient] = ingArr;
-        return { quantity: quantity ? +quantity : null, unit, ingredient };
+        const [quantity, unit, description] = ingArr;
+        return { quantity: quantity ? +quantity : null, unit, description };
       });
 
-    console.log(ingredients);
     const recipe = {
-      description: 'New Recipe (Vinay)',
       title: newRecipe.title,
       publisher: newRecipe.publisher,
       source_url: newRecipe.sourceUrl,
@@ -127,8 +130,10 @@ export const uploadRecipe = async function (newRecipe) {
       cooking_time: +newRecipe.cookingTime,
       ingredients,
     };
-    console.log(recipe);
+
     const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipe);
+    state.recipe = createRecipeObject(data.data.recipe);
+    addBookmark(state.recipe);
   } catch (error) {
     throw error;
   }
