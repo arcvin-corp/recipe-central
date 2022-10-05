@@ -99,7 +99,11 @@ const controlBookmarkView = function () {
 };
 
 const controlAddRecipe = async function (newRecipe) {
-  await model.uploadRecipe(newRecipe);
+  try {
+    await model.uploadRecipe(newRecipe);
+  } catch (error) {
+    addRecipeView.renderError(error.message);
+  }
 };
 
 const init = function () {
