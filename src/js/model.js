@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, API_KEY, RES_PER_PAGE } from './config.js';
-import { getJSON, sendJSON } from './helpers.js';
+import { AJAX } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -14,7 +14,6 @@ export const state = {
 };
 
 const createRecipeObject = function (data) {
-  console.log(data);
   return {
     id: data.id,
     title: data.title,
@@ -30,7 +29,7 @@ const createRecipeObject = function (data) {
 
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}/${id}`);
+    const data = await AJAX(`${API_URL}/${id}?key=${API_KEY}`);
 
     state.recipe = createRecipeObject(data.data.recipe);
 
@@ -47,13 +46,14 @@ export const loadRecipe = async function (id) {
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = await AJAX(`${API_URL}?search=${query}&key=${API_KEY}`);
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
         image: rec.image_url,
+        ...(rec.key && { key: rec.key }),
       };
     });
     // Always set the page variable to 1 when loading new search results
@@ -97,6 +97,10 @@ export const addBookmark = function (recipe) {
   persistBookmarks();
 };
 
+/**
+ * Delete a bookmarked recipe
+ * @param {Number} id ID value of the recipe
+ */
 export const deleteBookmark = function (id) {
   const index = state.bookmarks.findIndex(recipe => recipe.id === id);
   // Delete item from bookmarks array
@@ -112,7 +116,7 @@ export const uploadRecipe = async function (newRecipe) {
     const ingredients = Object.entries(newRecipe)
       .filter(entry => entry[0].startsWith('ingredient') && entry[1])
       .map(ing => {
-        const ingArr = ing[1].replaceAll(' ', '').split(',');
+        const ingArr = ing[1].split(',').map(e => e.trim());
         if (ingArr.length !== 3)
           throw new Error(
             'Wrong ingredient format. Please check the submitted ingredient data.'
@@ -131,7 +135,7 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     };
 
-    const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipe);
+    const data = await AJAX(`${API_URL}?key=${API_KEY}`, recipe);
     state.recipe = createRecipeObject(data.data.recipe);
     addBookmark(state.recipe);
   } catch (error) {
