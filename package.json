@@ -2,10 +2,10 @@
   "name": "recipe-central",
   "version": "1.0.0",
   "description": "Centralized web application for finding recipes.",
+  "default": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel index.html",
-    "build": "parcel build index.html --dist-dir ./dist"
+    "build": "parcel build index.html --dist-dir ./dist --no-scope-hoist"
   },
   "repository": {
     "type": "git",
