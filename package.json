@@ -1,0 +1,29 @@
+{
+  "name": "recipe-central",
+  "version": "1.0.0",
+  "description": "Centralized web application for finding recipes.",
+  "default": "index.html",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html --dist-dir ./dist --no-scope-hoist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arcvin-corp/recipe-central.git"
+  },
+  "author": "Vinay Subramani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arcvin-corp/recipe-central/issues"
+  },
+  "homepage": "https://github.com/arcvin-corp/recipe-central#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.7.0",
+    "parcel": "^2.7.0"
+  },
+  "dependencies": {
+    "core-js": "^3.25.3",
+    "fractional": "^1.0.0",
+    "regenerator-runtime": "^0.13.9"
+  }
+}
